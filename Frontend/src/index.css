@@ -1,0 +1,7 @@
+body{
+  margin-right: 40px;
+  margin-left: 40px;
+  background-color: rgb(12, 158, 231);
+  border-left: 2px solid rgb(243, 62, 12);
+  border-right: 2px solid rgb(245, 13, 13);
+}

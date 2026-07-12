@@ -1,0 +1,41 @@
+.Profile{
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+    gap: 20px;
+    margin: 20px;
+}
+.Profile-list{
+    border: 2px solid rgb(156, 190, 185);
+    padding:20px;
+    border-radius: 30px;
+    background-color: rgb(31, 98, 98);
+    outline: 2px solid rgb(255, 12, 12);
+}
+.Profile-list:hover{
+    border: 2px solid red;
+    cursor: pointer;
+    background-color: rgb(12, 40, 227);
+    animation: pulse 1s infinite;
+}
+.Profile-list-image{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+       
+    }
+    50% {
+        transform: scale(1.05);
+      
+    }
+    
+}
+.Profile-list a{
+    text-decoration: none;
+}
+.Profile-list a h3, .Profile-list a p{
+    color: white;
+}

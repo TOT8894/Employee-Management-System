@@ -1,0 +1,26 @@
+.Header{
+    display: block;
+    position: sticky;
+    top:0px;
+    background-color: blue;
+    margin-top: 0px;
+}
+.Header-ul{
+    display: flex;
+    list-style: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 20px 10px;
+}
+.Header-ul-li{
+    padding: 10px;
+    margin-left: 10px;
+    border-bottom-right-radius: 20px;
+}
+.Header-ul-li a{
+    text-decoration: none;
+    color: white;
+}
+.Header-ul-li:hover{
+    background-color: rgb(255, 0, 0);
+}
