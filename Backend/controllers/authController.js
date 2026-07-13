@@ -245,3 +245,49 @@ export const signOut = async (req, res, next) => {
     next(error);
   }
 };
+
+export const refreshToken = async (req, res, next) => {
+  try {
+    const refreshToken = req.cookies?.refreshToken;
+
+    if (!refreshToken) {
+      const error = new Error("token missing");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const hashedRefreshToken = await crypto
+      .createHash("sha256")
+      .update(refreshToken)
+      .digest("hex");
+    const token = await RefreshToken.findOne({
+      refreshToken: hashedRefreshToken
+    });
+
+    if (!token) {
+      const error = new Error("unautherized");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const decode = jwt.verify(refreshToken, REFRESH_TOKEN_PUBLIC_KEY);
+    const accessToken = jwt.sign(
+      { user_id: decode.user_id },
+      ACCESS_TOKEN_PRIVATE_KEY,
+      { algorithm: "HS256", expiresIn: ACCESS_TOKEN_EXPIRE_DATE }
+    );
+
+    res.cookie("accessToken", accessToken, {
+      maxAge: 15 * 60 * 1000,
+      ...cookieOption
+    });
+
+    res.status(201).json({
+      message: "access token produced",
+      success: true,
+      accessToken
+    });
+  } catch (error) {
+    next(error);
+  }
+};
