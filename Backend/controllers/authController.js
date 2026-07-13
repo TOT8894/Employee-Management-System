@@ -6,10 +6,8 @@ import User from "../models/userModel.js"
 import RefreshToken from "../models/refreshTokenModel.js";
 const ACCESS_TOKEN_EXPIRE_DATE = process.env.ACCESS_TOKEN_EXPIRE_DATE;
 const REFRESH_TOKEN_EXPIRE_DATE = process.env.REFRESH_TOKEN_EXPIRE_DATE;
-const ACCESS_TOKEN_PRIVATE_KEY = process.env.ACCESS_TOKEN_PRIVATE_KEY;
-const REFRESH_TOKEN_PRIVATE_KEY = process.env.REFRESH_TOKEN_PEIVATE_KEY;
-const REFRESH_TOKEN_PUBLIC_KEY = process.env.REFRESH_TOKEN_PUBLIC_KEY;
-const ACCESS_TOKEN_PUBLIC_KEY = process.env.ACCESS_TOKEN_PUBLIC_KEY;
+const REFRESH_TOKEN_KEY = process.env.REFRESH_TOKEN_KEY;
+const ACCESS_TOKEN_KEY = process.env.ACCESS_TOKEN_KEY;
 
 const cookieOption = {
   sameSite: "lax",
@@ -59,13 +57,13 @@ export const signUp = async (req, res, next) => {
 
     const accessToken = jwt.sign(
       { user_id: newUser._id },
-      ACCESS_TOKEN_PRIVATE_KEY,
+      ACCESS_TOKEN_KEY,
       { expiresIn: ACCESS_TOKEN_EXPIRE_DATE }
     );
 
     const refreshToken = jwt.sign(
       { user_id: newUser._id },
-      REFRESH_TOKEN_PRIVATE_KEY,
+      REFRESH_TOKEN_KEY,
       { algorithm: "HS256", expiresIn: REFRESH_TOKEN_EXPIRE_DATE }
     );
 
@@ -273,7 +271,7 @@ export const refreshToken = async (req, res, next) => {
     const decode = jwt.verify(refreshToken, REFRESH_TOKEN_PUBLIC_KEY);
     const accessToken = jwt.sign(
       { user_id: decode.user_id },
-      ACCESS_TOKEN_PRIVATE_KEY,
+      ACCESS_TOKEN_KEY,
       { algorithm: "HS256", expiresIn: ACCESS_TOKEN_EXPIRE_DATE }
     );
 
