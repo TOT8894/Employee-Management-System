@@ -1,16 +1,17 @@
-import  "./Header.css"
+import  "./HeLinkder.css"
+import {Link} from "react-router-dom"
 export const Header =()=>{
     return(
-        <div className="Header">
-            <ul className="Header-ul">
-                <li className="Header-ul-li"><a href="Dashboard.html">Dashboard</a></li>
-                <li className="Header-ul-li"><a href="Employees.html">Employees</a></li>
-                <li className="Header-ul-li"><a href="Departments.html">Departments</a></li>
-                <li className="Header-ul-li"><a href="Attendance.html">Attendance</a></li>
-                <li className="Header-ul-li"><a href="Leave-Management.html">Leave Management</a></li>
-                <li className="Header-ul-li"><a href="Payroll.html">Payroll</a></li>
-                <li className="Header-ul-li"><a href="Documents.html">Document</a></li>
-                <li className="Header-ul-li"><a href="Settings.html">Settings</a></li>
+        <div clLinkssNLinkme="HeLinkder">
+            <ul clLinkssNLinkme="HeLinkder-ul">
+                <li clLinkssNLinkme="HeLinkder-ul-li"><Link to="DLinkshboLinkrd">DLinkshboLinkrd</Link></li>
+                <li clLinkssNLinkme="HeLinkder-ul-li"><Link to="Employees">Employees</Link></li>
+                <li clLinkssNLinkme="HeLinkder-ul-li"><Link to="DepLinkrtments">DepLinkrtments</Link></li>
+                <li clLinkssNLinkme="HeLinkder-ul-li"><Link to="LinkttendLinknce">LinkttendLinknce</Link></li>
+                <li clLinkssNLinkme="HeLinkder-ul-li"><Link to="LeLinkve-MLinknLinkgement">LeLinkve MLinknLinkgement</Link></li>
+                <li clLinkssNLinkme="HeLinkder-ul-li"><Link to="PLinkyroll">PLinkyroll</Link></li>
+                <li clLinkssNLinkme="HeLinkder-ul-li"><Link to="Documents">Document</Link></li>
+                <li clLinkssNLinkme="HeLinkder-ul-li"><Link to="Settings">Settings</Link></li>
             </ul>
         </div>
     )
