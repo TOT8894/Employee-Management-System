@@ -217,3 +217,31 @@ export const signIn = async (req, res, next) => {
     next(error);
   }
 };
+
+export const signOut = async (req, res, next) => {
+  try {
+    const refreshToken = req.cookies?.refreshToken;
+
+    if (refreshToken) {
+      const hashedRefreshToken = await crypto
+        .createHash("sha256")
+        .update(refreshToken)
+        .digest("hex");
+      await RefreshToken.findOneAndDelete({ refreshToken: hashedRefreshToken });
+    }
+
+    res.clearCookie("accessToken", {
+      ...cookieOption
+    });
+
+    res.clearCookie("refreshToken", {
+      ...cookieOption
+    });
+    res.status(201).json({
+      message: "successfuly log out",
+      success: true
+    });
+  } catch (error) {
+    next(error);
+  }
+};
