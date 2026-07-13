@@ -291,3 +291,25 @@ export const refreshToken = async (req, res, next) => {
     next(error);
   }
 };
+export const getUser = async (req, res) => {
+  try {
+    const id = req.user?.id;
+    if (!id) {
+      const error = new Error("unautherized");
+      error.statusCode = 401;
+      throw error;
+    }
+    const user = await User.findById(id).select("-password");
+    if (!user) {
+      const error = new Error("user not found");
+      error.statusCode = 404;
+      throw error;
+    }
+    res.status(200).json({
+      success: true,
+      data: user
+    });
+  } catch (error) {
+    next(error);
+  }
+};
