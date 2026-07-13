@@ -108,3 +108,112 @@ export const signUp = async (req, res, next) => {
     next(error);
   }
 };
+
+export const signIn = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const { error } = userValidation.validate(req.body);
+
+    if (error) {
+      const error = new Error("invalid input");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    if (!email || !password) {
+      const error = new Error("ful_name,email,password required");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      const error = new Error("user not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (password.length < 8) {
+      const error = new Error("password is not strong");
+      error.statusCode = 401;
+      throw error;
+    }
+    const isCorrectPassword = await bcrypt.compare(password, user.password);
+
+    if (user.lockUntil && user.lockUntil > new Date()) {
+      const error = new Error("your account is blocked try again later");
+      error.statusCode = 403;
+      throw error;
+    }
+
+    if (!isCorrectPassword) {
+      user.worngAttempts = (user.worngAttempts || 0) + 1;
+      if (user.worngAttempts > 5) {
+        user.lockUntil = new Date(Date.now() + 10 * 60 * 1000);
+        await user.save();
+        const error = new Error("invalid credential");
+        error.statusCode = 401;
+        throw error;
+      }
+      await user.save();
+      const error = new Error("invalid credential");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    user.worngAttempts = 0;
+    user.lockUntil = null;
+    await user.save();
+
+    const accessToken = jwt.sign(
+      { user_id: user._id },
+      ACCESS_TOKEN_PRIVATE_KEY,
+      { expiresIn: ACCESS_TOKEN_EXPIRE_DATE }
+    );
+
+    const refreshToken = jwt.sign(
+      { user_id: user._id },
+      REFRESH_TOKEN_PRIVATE_KEY,
+      { algorithm: "HS256", expiresIn: REFRESH_TOKEN_EXPIRE_DATE }
+    );
+
+    res.cookie("accessToken", accessToken, {
+      maxAge: 15 * 60 * 1000,
+      ...cookieOption
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      ...cookieOption
+    });
+
+    const hashedRefreshToken = await crypto
+      .createHash("sha256")
+      .update(refreshToken)
+      .digest("hex");
+    let expires_at = new Date();
+    expires_at.setDate(expires_at.getDate() + 90);
+
+    await RefreshToken.create({
+      user_id: user._id,
+      refreshToken: hashedRefreshToken,
+      expires_at
+    });
+
+    const userObject = user.toObject();
+    delete userObject.password;
+
+    res.status(201).json({
+      message: "successfuly signin",
+      success: true,
+      data: {
+        accessToken,
+        refreshToken,
+        userObject
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
